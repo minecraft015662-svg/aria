@@ -1,195 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arix Theme</title>
-<style>
-:root{--bg:#f6f7fb;--card:#fff;--ink:#16181d;--mute:#5d6470;--line:#dfe3ea;--acc:#2f5bea;--bad:#d33;--ok:#1a8f4c;--code:#10131a;--codeink:#d7e0ff}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#181b22;--ink:#eef0f4;--mute:#9aa3b2;--line:#2a2f3a;--acc:#6f8cff;--bad:#ff6b6b;--ok:#4cd98a;--code:#0a0c10;--codeink:#cfd9ff}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,sans-serif}
-main{max-width:680px;margin:0 auto;padding:44px 20px}
-h1{font-size:2.2rem;margin:0 0 4px}
-.sub{color:var(--mute);margin:0 0 24px}
-nav{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:18px}
-nav button{flex:1;background:transparent;color:var(--mute);border-radius:8px;padding:9px 6px}
-nav button[aria-selected=true]{background:var(--acc);color:#fff}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:18px}
-h2{font-size:1.05rem;margin:0 0 10px}
-p{margin:0 0 12px}
-.mute{color:var(--mute)}
-button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:10px 16px;background:var(--acc);color:#fff;font-weight:600}
-button.sm{padding:4px 10px;font-size:.85rem}
-button.danger{background:var(--bad)}
-button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-button:disabled{opacity:.6;cursor:wait}
-input{font:inherit;width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin-bottom:12px;text-transform:uppercase}
-input[type=password]{text-transform:none}
-.key{font:600 1.3rem ui-monospace,Consolas,monospace;letter-spacing:.05em;word-break:break-all;margin-bottom:6px}
-pre{background:var(--code);color:var(--codeink);padding:14px;border-radius:8px;overflow-x:auto;margin:10px 0;font-size:.85rem;white-space:pre-wrap;word-break:break-all}
-.hidden{display:none}
-.err{color:var(--bad)} .good{color:var(--ok)}
-.warn{border-left:4px solid var(--bad);padding-left:12px}
-table{width:100%;border-collapse:collapse;font-size:.85rem}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
-.scroll{overflow-x:auto}
-code{font-family:ui-monospace,Consolas,monospace}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arix Theme Installer & License Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 40px auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1, h2 { color: #38bdf8; text-align: center; }
+        .command-box { background: #090d16; border: 1px solid #334155; padding: 15px; border-radius: 8px; font-family: monospace; color: #4ade80; display: flex; justify-content: space-between; align-items: center; }
+        button { background: #38bdf8; border: none; color: #0f172a; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #0284c7; color: white; }
+        .card { background: #334155; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; }
+    </style>
 </head>
 <body>
-<main>
-  <h1>Arix theme</h1>
-  <p class="sub">Install, update or remove the theme on your Pterodactyl panel.</p>
 
-  <nav role="tablist">
-    <button role="tab" data-tab="install" aria-selected="true">Install</button>
-    <button role="tab" data-tab="update" aria-selected="false">Update</button>
-    <button role="tab" data-tab="uninstall" aria-selected="false">Uninstall</button>
-    <button role="tab" data-tab="license" aria-selected="false">License</button>
-  </nav>
+<div class="container">
+    <h1>Arix Theme Licensing & Manager</h1>
+    <p style="text-align:center; color: #94a3b8;">Official Command Generator and License Activation Center</p>
 
-  <!-- INSTALL -->
-  <section data-panel="install">
     <div class="card">
-      <h2>Step 1: Create license</h2>
-      <button id="gen">Create my license</button>
-      <p class="err" id="genErr"></p>
+        <h3>Installation Command</h3>
+        <p>Run this command on your Pterodactyl Server terminal (as root):</p>
+        <div class="command-box">
+            <span id="cmdText">bash <(curl -s <span id="hostUrl"></span>/install.sh)</span>
+            <button onclick="copyCommand()">Copy Command</button>
+        </div>
     </div>
-    <div class="card hidden" id="installOut">
-      <h2>Your license</h2>
-      <div class="key" id="newKey"></div>
-      <p class="mute">Save this key. You need it for updates.</p>
-      <h2>Step 2: Run on your server</h2>
-      <pre id="installCmd"></pre>
-      <button data-copy="installCmd">Copy command</button>
-    </div>
-  </section>
 
-  <!-- UPDATE -->
-  <section data-panel="update" class="hidden">
     <div class="card">
-      <h2>Update to the latest version</h2>
-      <p class="mute">Enter your license key. Your original panel files stay backed up.</p>
-      <input id="updKey" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off">
-      <div id="updOut" class="hidden">
-        <pre id="updCmd"></pre>
-        <button data-copy="updCmd">Copy command</button>
-      </div>
+        <h3>Create License Key (Admin Panel)</h3>
+        <p>Generate a valid key before running the installation command:</p>
+        <input type="password" id="adminSecret" placeholder="Enter Admin Secret Code"><br>
+        <input type="text" id="customKey" placeholder="Custom License Key (Optional)"><br>
+        <button onclick="createLicense()">Generate License</button>
+        <div id="licenseResult" style="margin-top:15px; font-weight:bold; color:#4ade80;"></div>
     </div>
-  </section>
-
-  <!-- UNINSTALL -->
-  <section data-panel="uninstall" class="hidden">
-    <div class="card warn">
-      <h2>Uninstall the theme</h2>
-      <p class="mute">This removes the theme and restores your original panel files from the backup made at install. Database changes from the theme are not rolled back.</p>
-      <pre id="unCmd"></pre>
-      <button class="danger" data-copy="unCmd">Copy command</button>
-    </div>
-  </section>
-
-  <!-- LICENSE -->
-  <section data-panel="license" class="hidden">
-    <div class="card">
-      <h2>Check a license</h2>
-      <input id="chkKey" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off">
-      <button id="chkBtn">Check</button>
-      <p id="chkOut" style="margin-top:12px"></p>
-    </div>
-    <div class="card">
-      <h2>Admin</h2>
-      <p class="mute">See all licenses and revoke them. Needs the admin password set on the server.</p>
-      <input id="admPw" type="password" placeholder="Admin password" autocomplete="off">
-      <button id="admBtn">Load licenses</button>
-      <p class="err" id="admErr"></p>
-      <div class="scroll"><table id="admTbl" class="hidden">
-        <thead><tr><th>Key</th><th>Created</th><th>Downloads</th><th>Status</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table></div>
-    </div>
-  </section>
-</main>
+</div>
 
 <script>
-const $ = id => document.getElementById(id);
-const BASE = location.origin;
-const KEYRE = /^[A-Z0-9]{4}(-[A-Z0-9]{4}){3}$/;
-const cmd = (mode, key) => `curl -fsSL ${BASE}/install.sh | sudo bash -s -- ${mode}${key ? " " + key : ""}`;
+    const currentHost = window.location.origin;
+    document.getElementById('hostUrl').innerText = currentHost;
 
-// tabs
-document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => {
-  document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", x === b));
-  document.querySelectorAll("[data-panel]").forEach(p => p.classList.toggle("hidden", p.dataset.panel !== b.dataset.tab));
-});
+    function copyCommand() {
+        const text = `bash <(curl -s ${currentHost}/install.sh)`;
+        navigator.clipboard.writeText(text);
+        alert("Command copied to clipboard!");
+    }
 
-// install
-$("gen").onclick = async () => {
-  $("gen").disabled = true; $("genErr").textContent = "";
-  try {
-    const r = await fetch("/api/license", { method: "POST" });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.error || "Failed");
-    $("newKey").textContent = d.key;
-    $("installCmd").textContent = cmd("install", d.key);
-    $("installOut").classList.remove("hidden");
-    $("updKey").value = d.key; $("updKey").dispatchEvent(new Event("input"));
-  } catch (e) { $("genErr").textContent = e.message; }
-  $("gen").disabled = false;
-};
+    async function createLicense() {
+        const secret = document.getElementById('adminSecret').value;
+        const key = document.getElementById('customKey').value;
 
-// update
-$("updKey").oninput = () => {
-  const k = $("updKey").value.trim().toUpperCase();
-  const ok = KEYRE.test(k);
-  $("updOut").classList.toggle("hidden", !ok);
-  if (ok) $("updCmd").textContent = cmd("update", k);
-};
+        const res = await fetch('/api/admin/create-license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminSecret: secret, key: key })
+        });
 
-// uninstall
-$("unCmd").textContent = cmd("uninstall");
-
-// copy buttons
-document.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => {
-  const t = b.textContent;
-  try { await navigator.clipboard.writeText($(b.dataset.copy).textContent); b.textContent = "Copied"; }
-  catch { b.textContent = "Select and copy manually"; }
-  setTimeout(() => b.textContent = t, 1800);
-});
-
-// check license
-$("chkBtn").onclick = async () => {
-  const k = $("chkKey").value.trim().toUpperCase(), o = $("chkOut");
-  o.className = ""; o.textContent = "";
-  if (!KEYRE.test(k)) { o.className = "err"; o.textContent = "Enter a key like XXXX-XXXX-XXXX-XXXX."; return; }
-  const d = await (await fetch("/api/license/" + k)).json();
-  if (d.status === "active") { o.className = "good"; o.textContent = "Active" + (d.created ? ", created " + new Date(d.created).toLocaleDateString() : "") + ". Downloads: " + d.downloads; }
-  else if (d.status === "revoked") { o.className = "err"; o.textContent = "This license was revoked."; }
-  else { o.className = "err"; o.textContent = "Invalid license key."; }
-};
-
-// admin
-async function loadAdmin() {
-  $("admErr").textContent = "";
-  const r = await fetch("/api/admin/licenses", { headers: { "x-admin-password": $("admPw").value } });
-  const d = await r.json();
-  if (!r.ok) { $("admErr").textContent = d.error || "Failed"; return; }
-  const tb = document.querySelector("#admTbl tbody"); tb.innerHTML = "";
-  d.forEach(l => {
-    const tr = tb.insertRow();
-    [l.key, new Date(l.created).toLocaleDateString(), l.downloads, l.revoked ? "Revoked" : "Active"].forEach(v => tr.insertCell().textContent = v);
-    const b = document.createElement("button");
-    b.className = "sm" + (l.revoked ? "" : " danger"); b.textContent = l.revoked ? "Restore" : "Revoke";
-    b.onclick = async () => {
-      await fetch("/api/admin/revoke", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": $("admPw").value }, body: JSON.stringify({ key: l.key, revoked: !l.revoked }) });
-      loadAdmin();
-    };
-    tr.insertCell().appendChild(b);
-  });
-  $("admTbl").classList.remove("hidden");
-  if (!d.length) $("admErr").textContent = "No licenses yet.";
-}
-$("admBtn").onclick = loadAdmin;
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('licenseResult').innerText = "Generated License Key: " + data.licenseKey;
+        } else {
+            document.getElementById('licenseResult').innerText = "Error: " + (data.error || "Failed to generate key");
+        }
+    }
 </script>
+
 </body>
 </html>

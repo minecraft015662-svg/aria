@@ -41,12 +41,12 @@ app.get('/api/verify-license', (req, res) => {
     const found = licenses.find(l => l.key === key);
 
     if (!found) {
-        return.json({ valid: false, message: "License key not found!" });
+        return res.json({ valid: false, message: "License key not found!" });
     }
 
     // Check if expired
     if (found.expiresAt && new Date() > new Date(found.expiresAt)) {
-        return.json({ valid: false, message: "License key has expired!" });
+        return res.json({ valid: false, message: "License key has expired!" });
     }
 
     if (found.active) {

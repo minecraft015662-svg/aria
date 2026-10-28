@@ -34,14 +34,14 @@ function saveApiKeys(keys) {
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
 
-// 1. Verify License (Plain text return for bash)
+// 1. Verify License (Plain text response to prevent curl parsing errors)
 app.get('/api/verify-license', (req, res) => {
     const key = req.query.key;
     const licenses = getLicenses();
     const found = licenses.find(l => l.key === key);
 
     if (!found) {
-        return res.status(403.0).send("INVALID");
+        return res.status(403).send("INVALID");
     }
     if (found.expiresAt && new Date() > new Date(found.expiresAt)) {
         return res.status(403).send("EXPIRED");
@@ -53,7 +53,7 @@ app.get('/api/verify-license', (req, res) => {
     }
 });
 
-// 2. Download Theme Endpoint
+// 2. Download Theme Endpoint (Checks multiple locations: themes/arix.zip & private/theme.zip)
 app.get('/api/download-theme', (req, res) => {
     const key = req.query.key;
     const licenses = getLicenses();
@@ -63,15 +63,19 @@ app.get('/api/download-theme', (req, res) => {
         return res.status(403).send("Unauthorized or Expired License");
     }
 
-    const themePath = path.join(__dirname, 'themes', 'arix.zip');
-    if (fs.existsSync(themePath)) {
-        res.download(themePath, 'arix.zip');
+    const path1 = path.join(__dirname, 'themes', 'arix.zip');
+    const path2 = path.join(__dirname, 'private', 'theme.zip');
+
+    if (fs.existsSync(path1)) {
+        res.download(path1, 'arix.zip');
+    } else if (fs.existsSync(path2)) {
+        res.download(path2, 'arix.zip');
     } else {
-        res.status(404).send("Theme File Not Found!");
+        res.status(404).send("Theme Zip File Not Found! Please place it in themes/arix.zip or private/theme.zip");
     }
 });
 
-// 3. Admin API: Get All Licenses & API Keys
+// 3. Admin API: Get All Data
 app.post('/api/admin/data', (req, res) => {
     const { username, password } = req.body;
     if (username !== ADMIN_USER || password !== ADMIN_PASS) {

@@ -150,8 +150,7 @@
                 <td><button class="btn-danger" onclick="deleteLicense('${l.key}')">Delete</button></td>
             </tr>`;
         });
-        document.getElementById('licenseTableBody').html = licHtml || "<tr><td colspan='4'>No licenses found.</td></tr>";
-        document.getElementById('licenseTableBody').innerHTML = licHtml;
+        document.getElementById('licenseTableBody').innerHTML = licHtml || "<tr><td colspan='4'>No licenses found.</td></tr>";
 
         let apiHtml = "";
         apiKeys.forEach(k => {

@@ -34,20 +34,18 @@ function saveApiKeys(keys) {
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
 
-// 1. Verify License with Expiry Check (Returns exact string 'SUCCESS' for bash curl check)
+// 1. Verify License (Plain text return for bash)
 app.get('/api/verify-license', (req, res) => {
     const key = req.query.key;
     const licenses = getLicenses();
     const found = licenses.find(l => l.key === key);
 
     if (!found) {
-        return res.status(403).send("INVALID");
+        return res.status(403.0).send("INVALID");
     }
-
     if (found.expiresAt && new Date() > new Date(found.expiresAt)) {
         return res.status(403).send("EXPIRED");
     }
-
     if (found.active) {
         return res.send("SUCCESS");
     } else {
@@ -73,12 +71,23 @@ app.get('/api/download-theme', (req, res) => {
     }
 });
 
-// 3. Admin API: Create License with Expiry Duration
+// 3. Admin API: Get All Licenses & API Keys
+app.post('/api/admin/data', (req, res) => {
+    const { username, password } = req.body;
+    if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    res.json({
+        licenses: getLicenses(),
+        apiKeys: getApiKeys()
+    });
+});
+
+// 4. Admin API: Create License
 app.post('/api/admin/create-license', (req, res) => {
     const { username, password, key, durationDays } = req.body;
-    
     if (username !== ADMIN_USER || password !== ADMIN_PASS) {
-        return res.status(401).json({ error: "Invalid Admin Credentials!" });
+        return res.status(401).json({ error: "Unauthorized" });
     }
 
     const licenses = getLicenses();
@@ -95,37 +104,50 @@ app.post('/api/admin/create-license', (req, res) => {
     licenses.push({ key: newKey, active: true, expiresAt: expiresAt, createdAt: new Date() });
     saveLicenses(licenses);
 
-    res.json({ success: true, licenseKey: newKey, expiresAt: expiresAt || "Lifetime" });
+    res.json({ success: true, licenseKey: newKey });
 });
 
-// 4. Admin API: Generate Bot Hosting API Key
+// 5. Admin API: Delete License
+app.post('/api/admin/delete-license', (req, res) => {
+    const { username, password, key } = req.body;
+    if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    let licenses = getLicenses();
+    licenses = licenses.filter(l => l.key !== key);
+    saveLicenses(licenses);
+
+    res.json({ success: true });
+});
+
+// 6. Admin API: Create Bot API Key
 app.post('/api/admin/create-apikey', (req, res) => {
     const { username, password, botName } = req.body;
-
     if (username !== ADMIN_USER || password !== ADMIN_PASS) {
-        return res.status(401).json({ error: "Invalid Admin Credentials!" });
+        return res.status(401).json({ error: "Unauthorized" });
     }
 
     const apiKeys = getApiKeys();
-    const apiKey = 'BOTAPI-' + Math.random().toString(36).substring(2, 15).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    apiKeys.push({ botName: botName || "My Bot", apiKey: apiKey, createdAt: new Date() });
+    const apiKey = 'BOTAPI-' + Math.random().toString(36).substring(2, 12).toUpperCase();
+    apiKeys.push({ botName: botName || "Bot", apiKey: apiKey, createdAt: new Date() });
     saveApiKeys(apiKeys);
 
-    res.json({ success: true, apiKey: apiKey });
+    res.json({ success: true, apiKey });
 });
 
-// 5. Bot API Endpoint for hosting integration
-app.get('/api/bot/verify', (req, res) => {
-    const apiKey = req.headers['x-api-key'] || req.query.apikey;
-    const apiKeys = getApiKeys();
-    const found = apiKeys.find(k => k.apiKey === apiKey);
-
-    if (found) {
-        return res.json({ status: "online", botName: found.botName, message: "Bot API Authenticated Successfully!" });
-    } else {
-        return res.status(403).json({ status: "error", message: "Invalid Bot API Key!" });
+// 7. Admin API: Delete Bot API Key
+app.post('/api/admin/delete-apikey', (req, res) => {
+    const { username, password, apiKey } = req.body;
+    if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+        return res.status(401).json({ error: "Unauthorized" });
     }
+
+    let apiKeys = getApiKeys();
+    apiKeys = apiKeys.filter(k => k.apiKey !== apiKey);
+    saveApiKeys(apiKeys);
+
+    res.json({ success: true });
 });
 
 // Serve Shell Script
@@ -135,6 +157,11 @@ app.get('/install.sh', (req, res) => {
     scriptContent = scriptContent.replace(/{{HOST_URL}}/g, host);
     res.setHeader('Content-Type', 'text/x-shellscript');
     res.send(scriptContent);
+});
+
+// Serve Admin Dashboard Page
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 app.listen(PORT, () => {

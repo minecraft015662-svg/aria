@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arix Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #0b0f19; --card-bg: #131b2e; --accent-cyan: #00f2fe; --accent-pink: #4facfe; --text-main: #f1f5f9; --text-dim: #94a3b8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rajdhani', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 20px; }
+        .wrapper { max-width: 1000px; margin: 0 auto; background: var(--card-bg); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 16px; padding: 30px; box-shadow: 0 0 35px rgba(0,0,0,0.8); }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--accent-cyan); text-align: center; margin-bottom: 25px; }
+        .card { background: #090e17; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--accent-cyan); margin-bottom: 15px; }
+        input, select { width: 100%; padding: 10px 14px; background: #030712; border: 1px solid #1e293b; border-radius: 8px; color: #fff; font-size: 1rem; margin-bottom: 10px; }
+        .btn { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #030712; font-family: 'Orbitron', sans-serif; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+        .btn:hover { box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+        .btn-danger { background: #f87171; color: #fff; padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1e293b; font-size: 0.95rem; }
+        th { color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.9rem; }
+        #loginSection { max-width: 450px; margin: 50px auto; text-align: center; }
+        #dashboardContent { display: none; }
+        .cmd-box { background: #030712; padding: 10px; border-radius: 6px; font-family: monospace; color: #38edf8; margin-bottom: 15px; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Login Screen -->
+    <div id="loginSection">
+        <h1>🛡️ Admin Login</h1>
+        <div style="text-align: left; margin-top: 20px;">
+            <input type="text" id="loginUser" placeholder="Admin Username">
+            <input type="password" id="loginPass" placeholder="Admin Password">
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="loadDashboard()">Login to Dashboard</button>
+        </div>
+        <p id="loginError" style="color: #f87171; margin-top: 15px;"></p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboardContent">
+        <h1>⚡ Arix Master Admin Dashboard</h1>
+
+        <div class="card">
+            <h3>Terminal Installation Command</h3>
+            <div class="cmd-box" id="cmdDisplay">bash <(curl -s /install.sh)</div>
+        </div>
+
+        <div class="card">
+            <h3>🔑 Generate Theme License</h3>
+            <input type="text" id="customKey" placeholder="Custom Key (Optional)">
+            <select id="durationDays">
+                <option value="1">1 Day Validity</option>
+                <option value="7">7 Days Validity</option>
+                <option value="30" selected>30 Days Validity</option>
+                <option value="365">1 Year Validity</option>
+                <option value="lifetime">Lifetime Validity</option>
+            </select>
+            <button class="btn" onclick="createLicense()">Create License Key</button>
+        </div>
+
+        <div class="card">
+            <h3>📋 Manage Existing Licenses</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>License Key</th>
+                        <th>Expires At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="licenseTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>🤖 Generate Bot Hosting API Key</h3>
+            <input type="text" id="botName" placeholder="Bot Name (e.g. Music Bot)">
+            <button class="btn" onclick="createApiKey()">Generate API Key</button>
+        </div>
+
+        <div class="card">
+            <h3>📋 Manage Bot API Keys</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bot Name</th>
+                        <th>API Key</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="apiKeyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let savedUser = "";
+    let savedPass = "";
+
+    document.getElementById('cmdDisplay').innerText = `bash <(curl -s ${window.location.origin}/install.sh)`;
+
+    async function loadDashboard() {
+        savedUser = document.getElementById('loginUser').value;
+        savedPass = document.getElementById('loginPass').value;
+        const err = document.getElementById('loginError');
+
+        try {
+            const res = await fetch('/api/admin/data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: savedUser, password: savedPass })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                renderTables(data.licenses, data.apiKeys);
+            } else {
+                err.innerText = "Invalid Username or Password!";
+            }
+        } catch (e) {
+            err.innerText = "Connection Error!";
+        }
+    }
+
+    async function refreshData() {
+        const res = await fetch('/api/admin/data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: savedUser, password: savedPass })
+        });
+        const data = await res.json();
+        if (res.ok) renderTables(data.licenses, data.apiKeys);
+    }
+
+    function renderTables(licenses, apiKeys) {
+        let licHtml = "";
+        licenses.forEach(l => {
+            let exp = l.expiresAt ? new Date(l.expiresAt).toLocaleString() : "Lifetime";
+            let status = l.active ? "Active" : "Disabled";
+            licHtml += `<tr>
+                <td><b>${l.key}</b></td>
+                <td>${exp}</td>
+                <td style="color: #4ade80;">${status}</td>
+                <td><button class="btn-danger" onclick="deleteLicense('${l.key}')">Delete</button></td>
+            </tr>`;
+        });
+        document.getElementById('licenseTableBody').html = licHtml || "<tr><td colspan='4'>No licenses found.</td></tr>";
+        document.getElementById('licenseTableBody').innerHTML = licHtml;
+
+        let apiHtml = "";
+        apiKeys.forEach(k => {
+            apiHtml += `<tr>
+                <td><b>${k.botName}</b></td>
+                <td style="font-family:monospace; color:#38edf8;">${k.apiKey}</td>
+                <td><button class="btn-danger" onclick="deleteApiKey('${k.apiKey}')">Delete</button></td>
+            </tr>`;
+        });
+        document.getElementById('apiKeyTableBody').innerHTML = apiHtml || "<tr><td colspan='3'>No API keys found.</td></tr>";
+    }
+
+    async function createLicense() {
+        const key = document.getElementById('customKey').value;
+        const durationDays = document.getElementById('durationDays').value;
+        await fetch('/api/admin/create-license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: savedUser, password: savedPass, key, durationDays })
+        });
+        document.getElementById('customKey').value = "";
+        refreshData();
+    }
+
+    async function deleteLicense(key) {
+        if (!confirm("Are you sure you want to delete this license?")) return;
+        await fetch('/api/admin/delete-license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: savedUser, password: savedPass, key })
+        });
+        refreshData();
+    }
+
+    async function createApiKey() {
+        const botName = document.getElementById('botName').value;
+        await fetch('/api/admin/create-apikey', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: savedUser, password: savedPass, botName })
+        });
+        document.getElementById('botName').value = "";
+        refreshData();
+    }
+
+    async function deleteApiKey(apiKey) {
+        if (!confirm("Are you sure you want to delete this Bot API key?")) return;
+        await fetch('/api/admin/delete-apikey', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: savedUser, password: savedPass, apiKey })
+        });
+        refreshData();
+    }
+</script>
+
+</body>
+</html>

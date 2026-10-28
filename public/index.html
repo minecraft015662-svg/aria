@@ -3,199 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arix Gaming Portal | License & Bot API Hub</title>
+    <title>Arix Gaming Portal | Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131b2e;
-            --accent-cyan: #00f2fe;
-            --accent-pink: #4facfe;
-            --text-main: #f1f5f9;
-            --text-dim: #94a3b8;
-        }
+        :root { --bg-color: #0b0f19; --card-bg: #131b2e; --accent-cyan: #00f2fe; --accent-pink: #4facfe; --text-main: #f1f5f9; --text-dim: #94a3b8; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
-                              radial-gradient(circle at 85% 85%, rgba(79, 172, 254, 0.08) 0%, transparent 40%);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .wrapper {
-            width: 100%;
-            max-width: 900px;
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 0 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 242, 254, 0.15);
-        }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.3rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .header p { color: var(--text-dim); font-size: 1.1rem; margin-top: 5px; }
-        .card {
-            background: #090e17;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 22px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-pink));
-        }
-        .card h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
-            color: var(--accent-cyan);
-            margin-bottom: 12px;
-        }
-        .cmd-box {
-            background: #030712; border: 1px solid #1f293d; padding: 12px 18px; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center; font-family: monospace; color: #38edf8; word-break: break-all;
-        }
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-        input, select {
-            width: 100%; padding: 12px 16px; background: #030712; border: 1px solid #1e293b; border-radius: 8px; color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1rem;
-        }
-        input:focus, select:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(0, 242, 254, 0.3); }
-        .btn {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #030712;
-            font-family: 'Orbitron', sans-serif; font-weight: 700; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
-        .result-box { margin-top: 12px; font-weight: bold; font-size: 1rem; word-break: break-all; }
-        .status-success { color: #4ade80; }
-        .status-error { color: #f87171; }
+        body { font-family: 'Rajdhani', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .wrapper { width: 100%; max-width: 700px; background: var(--card-bg); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        p { color: var(--text-dim); margin-bottom: 25px; font-size: 1.1rem; }
+        .btn { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #030712; font-family: 'Orbitron', sans-serif; font-weight: 700; padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; text-transform: uppercase; }
+        .btn:hover { box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
     </style>
 </head>
 <body>
-
 <div class="wrapper">
-    <div class="header">
-        <h1>ARIX GAMING & BOT HUB</h1>
-        <p>Theme License Manager & Bot Hosting API Portal</p>
-    </div>
-
-    <!-- Terminal Command -->
-    <div class="card">
-        <h3>⚡ Terminal Installation Command</h3>
-        <div class="cmd-box">
-            <span id="cmdText">bash <(curl -s <span id="hostUrl"></span>/install.sh)</span>
-            <button class="btn" style="padding: 6px 14px; font-size: 0.75rem;" onclick="copyCmd()">Copy</button>
-        </div>
-    </div>
-
-    <!-- Admin Panel: Theme License with Expiry -->
-    <div class="card">
-        <h3>🛡️ Admin Control: Generate Theme License</h3>
-        <div class="input-group">
-            <input type="text" id="adminUser" placeholder="Admin Username">
-            <input type="password" id="adminPass" placeholder="Admin Password">
-            <input type="text" id="customKey" placeholder="Custom License Key (Optional)">
-            <select id="durationDays">
-                <option value="1">1 Day Validity</option>
-                <option value="7">7 Days Validity</option>
-                <option value="30" selected>30 Days (1 Month) Validity</option>
-                <option value="365">1 Year Validity</option>
-                <option value="lifetime">Lifetime Validity</option>
-            </select>
-            <button class="btn" onclick="generateLicense()">Generate Timed License</button>
-        </div>
-        <div id="licenseResult" class="result-box"></div>
-    </div>
-
-    <!-- Admin Panel: Bot Hosting API Key -->
-    <div class="card">
-        <h3>🤖 Admin Control: Generate Bot Hosting API Key</h3>
-        <div class="input-group">
-            <input type="text" id="botAdminUser" placeholder="Admin Username">
-            <input type="password" id="botAdminPass" placeholder="Admin Password">
-            <input type="text" id="botName" placeholder="Bot Name (e.g. Discord Moderation Bot)">
-            <button class="btn" onclick="generateApiKey()">Generate Bot API Key</button>
-        </div>
-        <div id="apiResult" class="result-box"></div>
-    </div>
+    <h1>ARIX GAMING HUB</h1>
+    <p>Official Theme Installer & Management Portal</p>
+    <a href="/admin" class="btn">Go to Admin Dashboard 🛡️</a>
 </div>
-
-<script>
-    const currentHost = window.location.origin;
-    document.getElementById('hostUrl').innerText = currentHost;
-
-    function copyCmd() {
-        navigator.clipboard.writeText(`bash <(curl -s ${currentHost}/install.sh)`);
-        alert("Command Copied!");
-    }
-
-    async function generateLicense() {
-        const user = document.getElementById('adminUser').value;
-        const pass = document.getElementById('adminPass').value;
-        const key = document.getElementById('customKey').value;
-        const durationDays = document.getElementById('durationDays').value;
-        const resDiv = document.getElementById('licenseResult');
-
-        resDiv.innerText = "Generating...";
-        try {
-            const res = await fetch('/api/admin/create-license', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user, password: pass, key, durationDays })
-            });
-            const data = await res.json();
-            if (res.ok && data.success) {
-                resDiv.className = "result-box status-success";
-                resDiv.innerText = `🔑 Key: ${data.licenseKey} | Expires: ${data.expiresAt}`;
-            } else {
-                resDiv.className = "result-box status-error";
-                resDiv.innerText = "❌ " + (data.error || "Failed");
-            }
-        } catch (e) {
-            resDiv.className = "result-box status-error";
-            resDiv.innerText = "❌ Server error";
-        }
-    }
-
-    async function generateApiKey() {
-        const user = document.getElementById('botAdminUser').value;
-        const pass = document.getElementById('botAdminPass').value;
-        const botName = document.getElementById('botName').value;
-        const resDiv = document.getElementById('apiResult');
-
-        resDiv.innerText = "Generating API Key...";
-        try {
-            const res = await fetch('/api/admin/create-apikey', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user, password: pass, botName })
-            });
-            const data = await res.json();
-            if (res.ok && data.success) {
-                resDiv.className = "result-box status-success";
-                resDiv.innerText = `⚡ Bot API Key (${data.botName}): ${data.apiKey}`;
-            } else {
-                resDiv.className = "result-box status-error";
-                resDiv.innerText = "❌ " + (data.error || "Failed");
-            }
-        } catch (e) {
-            resDiv.className = "result-box status-error";
-            resDiv.innerText = "❌ Server error";
-        }
-    }
-</script>
-
 </body>
 </html>

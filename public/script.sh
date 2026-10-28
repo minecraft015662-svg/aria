@@ -26,16 +26,16 @@ case $OPTION in
         echo -e "\n${YELLOW}[+] License Verification Required${NC}"
         read -p "Enter your License Key: " LICENSE_KEY
 
-        RESPONSE=$(curl -s "$SERVER_URL/api/verify-license?key=$LICENSE_KEY")
+        RESPONSE=$(curl -sL "$SERVER_URL/api/verify-license?key=$LICENSE_KEY")
         if [[ "$RESPONSE" != "SUCCESS" ]]; then
-            echo -e "${RED}[!] Invalid or Expired License Key! (${RESPONSE}) Aborting...${NC}"
+            echo -e "${RED}[!] Invalid or Expired License Key! Aborting...${NC}"
             exit 1
         fi
         echo -e "${GREEN}[✓] License Verified Successfully!${NC}"
 
         echo -e "${YELLOW}[+] Downloading Theme Package...${NC}"
         cd $PTERO_DIR || exit
-        curl -s -o arix.zip "$SERVER_URL/api/download-theme?key=$LICENSE_KEY"
+        curl -sL -o arix.zip "$SERVER_URL/api/download-theme?key=$LICENSE_KEY"
 
         if [ ! -f "arix.zip" ]; then
             echo -e "${RED}[!] Download Failed! Theme package missing on server.${NC}"

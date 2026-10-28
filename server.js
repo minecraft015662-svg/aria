@@ -26,6 +26,10 @@ function saveLicenses(licenses) {
     fs.writeFileSync(DB_FILE, JSON.stringify(licenses, null, 2));
 }
 
+// Admin Credentials Config (Environment Variable or Default)
+const ADMIN_USER = process.env.ADMIN_USER || "admin";
+const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
+
 // 1. Verify License Endpoint
 app.get('/api/verify-license', (req, res) => {
     const key = req.query.key;
@@ -57,12 +61,13 @@ app.get('/api/download-theme', (req, res) => {
     }
 });
 
-// 3. Admin API to Create License
+// 3. Admin API to Create License with ID & Password
 app.post('/api/admin/create-license', (req, res) => {
-    const { adminSecret, key } = req.body;
+    const { username, password, key } = req.body;
     
-    if (adminSecret !== process.env.ADMIN_SECRET && adminSecret !== "MY_ADMIN_SECRET_123") {
-        return res.status(401).json({ error: "Unauthorized Admin Action" });
+    // Validate Admin ID & Password
+    if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+        return res.status(401).json({ error: "Invalid Admin Username or Password!" });
     }
 
     const licenses = getLicenses();

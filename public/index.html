@@ -3,40 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arix Theme Installer & License Portal</title>
+    <title>Arix Gaming Portal | License & Deployment Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 40px auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1, h2 { color: #38bdf8; text-align: center; }
-        .command-box { background: #090d16; border: 1px solid #334155; padding: 15px; border-radius: 8px; font-family: monospace; color: #4ade80; display: flex; justify-content: space-between; align-items: center; }
-        button { background: #38bdf8; border: none; color: #0f172a; padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #0284c7; color: white; }
-        .card { background: #334155; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --accent-cyan: #00f2fe;
+            --accent-pink: #4facfe;
+            --neon-glow: #00f2fe;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(79, 172, 254, 0.08) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 242, 254, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .header p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: #090e17;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-pink));
+        }
+
+        .card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cmd-box {
+            background: #030712;
+            border: 1px solid #1f293d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: #38edf8;
+            word-break: break-all;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #030712;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: #030712;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .status-success { color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+        .status-error { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Arix Theme Licensing & Manager</h1>
-    <p style="text-align:center; color: #94a3b8;">Official Command Generator and License Activation Center</p>
+<div class="wrapper">
+    <div class="header">
+        <h1>ARIX GAMING HUB</h1>
+        <p>License Key Generation & Automated Pterodactyl Theme Deployer</p>
+    </div>
 
+    <!-- Terminal Command Section -->
     <div class="card">
-        <h3>Installation Command</h3>
-        <p>Run this command on your Pterodactyl Server terminal (as root):</p>
-        <div class="command-box">
+        <h3>⚡ Terminal Installation Command</h3>
+        <p style="color: var(--text-dim); margin-bottom: 12px;">Run this command in your VPS / Server root terminal:</p>
+        <div class="cmd-box">
             <span id="cmdText">bash <(curl -s <span id="hostUrl"></span>/install.sh)</span>
-            <button onclick="copyCommand()">Copy Command</button>
+            <button class="btn" style="padding: 8px 16px; font-size: 0.8rem;" onclick="copyCmd()">Copy</button>
         </div>
     </div>
 
+    <!-- Admin Panel Section -->
     <div class="card">
-        <h3>Create License Key (Admin Panel)</h3>
-        <p>Generate a valid key before running the installation command:</p>
-        <input type="password" id="adminSecret" placeholder="Enter Admin Secret Code"><br>
-        <input type="text" id="customKey" placeholder="Custom License Key (Optional)"><br>
-        <button onclick="createLicense()">Generate License</button>
-        <div id="licenseResult" style="margin-top:15px; font-weight:bold; color:#4ade80;"></div>
+        <h3>🛡️ Admin Control Panel</h3>
+        <p style="color: var(--text-dim);">Log in with your Admin ID & Password to generate license keys:</p>
+
+        <div class="input-group">
+            <input type="text" id="adminUser" placeholder="Admin Username (ID)">
+            <input type="password" id="adminPass" placeholder="Admin Password">
+            <input type="text" id="customKey" placeholder="Custom Key (Optional - e.g. ARIX-VIP-1001)">
+            <button class="btn" onclick="generateKey()">Generate License</button>
+        </div>
+
+        <div id="result"></div>
     </div>
 </div>
 
@@ -44,27 +199,40 @@
     const currentHost = window.location.origin;
     document.getElementById('hostUrl').innerText = currentHost;
 
-    function copyCommand() {
+    function copyCmd() {
         const text = `bash <(curl -s ${currentHost}/install.sh)`;
         navigator.clipboard.writeText(text);
-        alert("Command copied to clipboard!");
+        alert("Command Copied to Clipboard!");
     }
 
-    async function createLicense() {
-        const secret = document.getElementById('adminSecret').value;
+    async function generateKey() {
+        const user = document.getElementById('adminUser').value;
+        const pass = document.getElementById('adminPass').value;
         const key = document.getElementById('customKey').value;
+        const resultDiv = document.getElementById('result');
 
-        const res = await fetch('/api/admin/create-license', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminSecret: secret, key: key })
-        });
+        resultDiv.className = "";
+        resultDiv.innerText = "Authenticating & Generating Key...";
 
-        const data = await res.json();
-        if (data.success) {
-            document.getElementById('licenseResult').innerText = "Generated License Key: " + data.licenseKey;
-        } else {
-            document.getElementById('licenseResult').innerText = "Error: " + (data.error || "Failed to generate key");
+        try {
+            const res = await fetch('/api/admin/create-license', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass, key: key })
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                resultDiv.className = "status-success";
+                resultDiv.innerText = "🔑 License Key Generated: " + data.licenseKey;
+            } else {
+                resultDiv.className = "status-error";
+                resultDiv.innerText = "❌ Error: " + (data.error || "Authentication Failed!");
+            }
+        } catch (err) {
+            resultDiv.className = "status-error";
+            resultDiv.innerText = "❌ Server Connection Error!";
         }
     }
 </script>

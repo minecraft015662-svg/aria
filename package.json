@@ -1,7 +1,7 @@
 {
-  "name": "arix-theme-manager",
-  "version": "2.0.0",
-  "description": "Gaming Theme Installer and License Portal for Arix Theme",
+  "name": "arix-gaming-manager",
+  "version": "3.0.0",
+  "description": "Arix Theme License & Bot Hosting API Manager",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

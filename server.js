@@ -34,25 +34,24 @@ function saveApiKeys(keys) {
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
 
-// 1. Verify License with Expiry Check
+// 1. Verify License with Expiry Check (Returns exact string 'SUCCESS' for bash curl check)
 app.get('/api/verify-license', (req, res) => {
     const key = req.query.key;
     const licenses = getLicenses();
     const found = licenses.find(l => l.key === key);
 
     if (!found) {
-        return res.json({ valid: false, message: "License key not found!" });
+        return res.status(403).send("INVALID");
     }
 
-    // Check if expired
     if (found.expiresAt && new Date() > new Date(found.expiresAt)) {
-        return res.json({ valid: false, message: "License key has expired!" });
+        return res.status(403).send("EXPIRED");
     }
 
     if (found.active) {
-        return res.json({ valid: true, message: "License Verified Successfully!" });
+        return res.send("SUCCESS");
     } else {
-        return res.json({ valid: false, message: "License is disabled!" });
+        return res.status(403).send("DISABLED");
     }
 });
 

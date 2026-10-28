@@ -27,8 +27,8 @@ case $OPTION in
         read -p "Enter your License Key: " LICENSE_KEY
 
         RESPONSE=$(curl -s "$SERVER_URL/api/verify-license?key=$LICENSE_KEY")
-        if [[ $RESPONSE != *"true"* ]]; then
-            echo -e "${RED}[!] Invalid or Expired License Key! Aborting...${NC}"
+        if [[ "$RESPONSE" != "SUCCESS" ]]; then
+            echo -e "${RED}[!] Invalid or Expired License Key! (${RESPONSE}) Aborting...${NC}"
             exit 1
         fi
         echo -e "${GREEN}[✓] License Verified Successfully!${NC}"

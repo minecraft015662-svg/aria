@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Arix theme</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#16181d;--mute:#5d6470;--line:#dfe3ea;--acc:#2f5bea;--code:#10131a;--codeink:#d7e0ff}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#181b22;--ink:#eef0f4;--mute:#9aa3b2;--line:#2a2f3a;--acc:#6f8cff;--code:#0a0c10;--codeink:#cfd9ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,sans-serif}
+main{max-width:640px;margin:0 auto;padding:48px 20px}
+h1{font-size:2rem;margin:0 0 6px}
+p.sub{color:var(--mute);margin:0 0 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:18px}
+h2{font-size:1.05rem;margin:0 0 12px}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:10px 16px;background:var(--acc);color:#fff;font-weight:600}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button:disabled{opacity:.6;cursor:wait}
+.key{font:600 1.3rem ui-monospace,Consolas,monospace;letter-spacing:.05em;word-break:break-all}
+pre{background:var(--code);color:var(--codeink);padding:14px;border-radius:8px;overflow-x:auto;margin:10px 0;font-size:.85rem}
+.hidden{display:none}
+#err{color:#d33;margin:10px 0 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Get Arix theme</h1>
+  <p class="sub">Create your license first. Your install command appears right after.</p>
+
+  <section class="card">
+    <h2>Step 1: Create license</h2>
+    <button id="gen">Create my license</button>
+    <p id="err"></p>
+  </section>
+
+  <section class="card hidden" id="step2">
+    <h2>Your license</h2>
+    <div class="key" id="key"></div>
+    <p style="color:var(--mute);margin:8px 0 0">Save this key. You need it to install.</p>
+  </section>
+
+  <section class="card hidden" id="step3">
+    <h2>Step 2: Install</h2>
+    <p style="color:var(--mute);margin:0 0 4px">Run this on your panel server.</p>
+    <pre id="cmd"></pre>
+    <button id="copy">Copy command</button>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+$("gen").onclick = async () => {
+  $("gen").disabled = true; $("err").textContent = "";
+  try {
+    const r = await fetch("/api/license", { method: "POST" });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "Failed");
+    $("key").textContent = d.key;
+    $("cmd").textContent = d.command;
+    $("step2").classList.remove("hidden");
+    $("step3").classList.remove("hidden");
+  } catch (e) { $("err").textContent = e.message; }
+  $("gen").disabled = false;
+};
+$("copy").onclick = async e => {
+  try { await navigator.clipboard.writeText($("cmd").textContent); e.target.textContent = "Copied"; }
+  catch { e.target.textContent = "Select and copy manually"; }
+  setTimeout(() => e.target.textContent = "Copy command", 1800);
+};
+</script>
+</body>
+</html>
